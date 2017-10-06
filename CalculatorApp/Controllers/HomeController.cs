@@ -23,7 +23,7 @@
 
             try
             {
-                numberOne = NumberParser.ParseDecimal(httpContext.Request.FormData["numberOne"]);
+                numberOne = NumberParser.ParseDecimal(httpContext.Request.FormData[HomeControllerConstants.FirstNumberParameterName]);
             }
             catch (Exception)
             {
@@ -32,14 +32,14 @@
 
             try
             {
-                numberTwo = NumberParser.ParseDecimal(httpContext.Request.FormData["numberTwo"]);
+                numberTwo = NumberParser.ParseDecimal(httpContext.Request.FormData[HomeControllerConstants.SecondNumberParameterName]);
             }
             catch (Exception)
             {
                 numberTwo = 0;
             }
 
-            string operation = httpContext.Request.FormData["operator"];
+            string operation = httpContext.Request.FormData[HomeControllerConstants.OperatorParameterName];
 
             Type strategyType;
 

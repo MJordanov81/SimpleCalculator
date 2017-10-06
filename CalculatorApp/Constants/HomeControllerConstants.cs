@@ -7,5 +7,11 @@
         public const string ResultOneNumberString = "{0} {1} = {2:f2}";
 
         public const string InvalidOperationMessage = "Invalid operation!";
+
+        public const string FirstNumberParameterName = "numberOne";
+
+        public const string SecondNumberParameterName = "numberTwo";
+
+        public const string OperatorParameterName = "operator";
     }
 }
