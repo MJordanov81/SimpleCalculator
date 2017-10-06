@@ -22,16 +22,14 @@
             return
             @"<style>
                 footer { text-align: center }
-                pre {background-color: #F94F80}
-                span.important {font-style: italic; font-weight: bold}
                 .result {color: red; font-weight: bold}
             </style>
 
             <head>
-                <title>By The Cake</title>
+                <title>My calculator</title>
                 <meta charset=""utf-8"">
-                <meta name=""description"" content =""Buy the cake in By The Cake"" >
-                <meta name= ""keywords"" content = ""cake, buy"" >
+                <meta name=""description"" content =""My Calculator"" >
+                <meta name= ""keywords"" content = ""calculator"" >
                 <meta name= ""author"" content = ""Marian Jordanov"" >
             </head> 
             <body>  
