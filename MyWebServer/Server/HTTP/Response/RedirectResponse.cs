@@ -2,11 +2,10 @@
 {
     public class RedirectResponse : HttpResponse
     {
-        public string Data { get; private set; }
 
-        public RedirectResponse(string redirectUrl, string data) : base(redirectUrl)
+        public RedirectResponse(string redirectUrl) : base(redirectUrl)
         {
-            this.Data = data;
+
         }
     }
 }
