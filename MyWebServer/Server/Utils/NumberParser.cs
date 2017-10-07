@@ -67,5 +67,21 @@
 
             return result;
         }
+
+        public static int ParseInt(string number)
+        {
+            int result;
+
+            try
+            {
+                result = int.Parse(number);
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException("Invalid string");
+            }
+
+            return result;
+        }
     }
 }
