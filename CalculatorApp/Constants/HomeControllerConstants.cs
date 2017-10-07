@@ -12,6 +12,8 @@
 
         public const string SecondNumberParameterName = "numberTwo";
 
-        public const string OperatorParameterName = "operator";
+        public const string OperatorParameterName = "operation";
+
+        public const string Result = "result";
     }
 }

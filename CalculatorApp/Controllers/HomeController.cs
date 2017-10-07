@@ -6,6 +6,7 @@
     using MyWebServer.Server.HTTP.Response;
     using MyWebServer.Server.Utils;
     using System;
+    using System.Collections.Generic;
     using Constants;
     using Views.Home;
 
@@ -18,51 +19,57 @@
 
         public IHttpResponse IndexPost(IHttpContext httpContext)
         {
-            decimal numberOne;
-            decimal numberTwo;
+            Dictionary<string, string> response = new Dictionary<string, string>();
 
-            try
-            {
-                numberOne = NumberParser.ParseDecimal(httpContext.Request.FormData[HomeControllerConstants.FirstNumberParameterName]);
-            }
-            catch (Exception)
-            {
-                numberOne = 0;
-            }
+            decimal numberOne = NumberParser.TryParseDecimalOrReturnZero(httpContext.Request.FormData[HomeControllerConstants.FirstNumberParameterName]);
 
-            try
-            {
-                numberTwo = NumberParser.ParseDecimal(httpContext.Request.FormData[HomeControllerConstants.SecondNumberParameterName]);
-            }
-            catch (Exception)
-            {
-                numberTwo = 0;
-            }
+            decimal numberTwo = NumberParser.TryParseDecimalOrReturnZero(httpContext.Request.FormData[HomeControllerConstants.SecondNumberParameterName]);
 
             string operation = httpContext.Request.FormData[HomeControllerConstants.OperatorParameterName];
 
-            Type strategyType;
+            if (!this.IsValidMathOperation(numberOne, numberTwo, operation))
+            {
+                return new ViewResponse(ResponseStatusCode.Ok, new IndexView(this.GenerateResponse(response, numberOne, numberTwo, operation, HomeControllerConstants.InvalidOperationMessage)));
+            }
 
+            CalculationStrategy strategy;
+
+            bool isThereRelevantStrategy = this.TryGetStrategy(operation, out strategy);
+
+            if (!isThereRelevantStrategy)
+            {
+                return new ViewResponse(ResponseStatusCode.Ok, new IndexView(this.GenerateResponse(response, numberOne, numberTwo, operation, HomeControllerConstants.InvalidOperationMessage)));
+            }
+               
+            decimal result = strategy.Calculate(numberOne, numberTwo);
+
+            return new ViewResponse(ResponseStatusCode.Ok, new IndexView(this.GenerateResponse(response, numberOne, numberTwo, operation, this.GetResultString(numberOne, numberTwo, operation, result))));            
+        }
+
+        private bool TryGetStrategy(string operation, out CalculationStrategy strategy)
+        {          
             try
             {
-                strategyType = CalculationStrategies.Strategies[operation];
+                Type strategyType = CalculationStrategies.Strategies[operation];
+                strategy = (CalculationStrategy)Activator.CreateInstance(strategyType);
+                return true;
             }
             catch (Exception)
             {
-                return new ViewResponse(ResponseStatusCode.Ok, new IndexView(HomeControllerConstants.InvalidOperationMessage));
-            }
+                strategy = null;
+                return false;
+            }            
+        }
 
-            CalculationStrategy strategy =
-                (CalculationStrategy)Activator.CreateInstance(strategyType);
+        private Dictionary<string, string> GenerateResponse(Dictionary<string, string> response, decimal numberOne, decimal numberTwo, string operation, string result)
+        {
+            response[HomeControllerConstants.FirstNumberParameterName] = $"{numberOne}";
+            response[HomeControllerConstants.SecondNumberParameterName] = $"{numberTwo}";
+            response[HomeControllerConstants.OperatorParameterName] = $"{operation}";
+            response[HomeControllerConstants.Result] = result;
 
-            if (!this.IsValidMathOperation(numberOne, numberTwo, operation))
-            {
-                return new ViewResponse(ResponseStatusCode.Ok, new IndexView(HomeControllerConstants.InvalidOperationMessage));
-            }
+            return response;
 
-            decimal result = strategy.Calculate(numberOne, numberTwo);
-
-            return new ViewResponse(ResponseStatusCode.Ok, new IndexView($"{this.GetResultString(numberOne, numberTwo, operation, result)}"));
         }
 
         private string GetResultString(decimal numberOne, decimal numberTwo, string operation, decimal result)

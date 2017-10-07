@@ -1,14 +1,24 @@
 ﻿namespace CalculatorApp.Views.Home
 {
+    using System.Collections.Generic;
     using MyWebServer.Server.Contracts;
 
     public class IndexView : IView
     {
         private string result;
+        private string numberOne;
+        private string numberTwo;
+        private string operation;
 
-        public IndexView(string result = null)
+        public IndexView(Dictionary<string, string> parameters = null)
         {
-            this.result = result;
+            if (parameters != null)
+            {               
+                this.result = parameters["result"];
+                this.numberOne = parameters["numberOne"];
+                this.numberTwo = parameters["numberTwo"];
+                this.operation = parameters["operation"];
+            }            
         }
 
         public string View()
@@ -34,11 +44,11 @@
             </head> 
             <body>  
             <h1>My Calculator</h1>
-            <form method=""post"" action=""/"">
-                <input type=""number"" step=""0.01"" name=""numberOne"" placeholder=""Enter number one...""/>
-                <input type=""text"" name=""operator"" placeholder=""+ - * / ^ sqrt""/>
-                <input type=""number"" step=""0.01"" name=""numberTwo"" placeholder=""Enter number two...""/>
-                <input type=""submit"" value=""Calculate""/>
+            <form method=""post"" action=""/"">" + 
+                $"<input type=\"number\" step=\"0.01\" name=\"numberOne\" placeholder=\"Enter number one...\" value=\"{this.numberOne}\"/>" +
+                $"<input type=\"text\" name=\"operation\" placeholder=\"+ - * / ^ sqrt\" value=\"{this.operation}\"/>" +
+                $"<input type=\"number\" step=\"0.01\" name=\"numberTwo\" placeholder=\"Enter number two...\" value=\"{this.numberTwo}\"/>" +
+                @"<input type=""submit"" value=""Calculate""/>
             </form>" +
 
             $"<div><p class=\"result\">Result: {this.result}</p></div>" + 
